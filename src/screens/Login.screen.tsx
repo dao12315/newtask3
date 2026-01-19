@@ -36,10 +36,13 @@ export default function LoginScreen({ navigation }: Props) {
     }
     try {
       const user = await UserService.login(email, password);
-      // 🔥 BƯỚC BẠN ĐANG THIẾU
+      console.log('🟢 LOGIN OK – USER:', user);
       await AuthStorage.saveUser(user);
-
-      navigation.navigate('Home', { user });
+      console.log('💾 SAVED USER TO STORAGE');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home', params: { user: user } }],
+      });
     } catch (error: any) {
       switch (error.message) {
         case 'EMAIL_NOT_FOUND':
@@ -72,7 +75,11 @@ export default function LoginScreen({ navigation }: Props) {
           Alert.alert('Lỗi', 'Không lấy được dữ liệu người dùng');
           return;
         }
-        navigation.replace('Home', { user: dbUser });
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home', params: { user: dbUser } }],
+        });
+
         return;
       }
       navigation.navigate('Password', {

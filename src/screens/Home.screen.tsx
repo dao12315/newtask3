@@ -31,26 +31,33 @@ export default function HomeScreen() {
     configureGoogleSignIn();
   }, []);
 
-  const logOut = async () => {
-    try {
-      // 1️⃣ XÓA SESSION (BẮT BUỘC – CHUNG)
-      await AuthStorage.clear();
-      // 1️⃣ Logout Google (nếu đã login bằng Google)
+const logOut = async () => {
+  try {
+    // 1️⃣ Clear session local (email + google đều cần)
+    await AuthStorage.clear();
+
+    // 2️⃣ Logout Google NẾU có user Google
+    const googleUser = await GoogleSignin.getCurrentUser();
+    if (googleUser) {
       await GoogleSignin.signOut();
-
-      // 2️⃣ Logout Firebase Auth (QUAN TRỌNG)
-      await auth().signOut();
-      Alert.alert('Đã đăng xuất!!');
-
-      // 3️⃣ Điều hướng về Welcome
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Welcome' }],
-      });
-    } catch (error) {
-      console.log('Logout error:', error);
     }
-  };
+
+    // 3️⃣ Logout Firebase Auth nếu có
+    if (auth().currentUser) {
+      await auth().signOut();
+    }
+
+    Alert.alert('Đã đăng xuất');
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Welcome' }],
+    });
+  } catch (error) {
+    console.log('Logout error:', error);
+  }
+};
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

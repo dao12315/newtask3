@@ -4,26 +4,36 @@ import type { RootStackParamList } from '../routes/Navigator';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import auth from '@react-native-firebase/auth';
 import { UserService } from '../services/todo.service';
+import { AuthStorage } from '../utils/auth.storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
 export default function SplashScreen({ navigation }: Props) {
   useEffect(() => {
     const timer = setTimeout(async () => {
-      const user = auth().currentUser;
+      try {
+        //Check session local (email + google)
+        const storedUser = await AuthStorage.getUser();
+        if (storedUser) {
+          navigation.replace('Home', { user: storedUser });
+          return;
+        }
+        //Check firebase auth
+        const firebaseUser = auth().currentUser;
 
-      if (user) {
-        if (!user.email) {
-          Alert.alert('Lỗi', 'Không lấy được email từ Google');
-          return;
+        if (firebaseUser?.email) {
+          const dbUser = await UserService.getByEmail(firebaseUser.email);
+
+          if (dbUser) {
+            await AuthStorage.saveUser(dbUser); //đồng bộ lại storage
+            navigation.replace('Home', {user: dbUser})
+            return;
+          }
         }
-        const dbUser = await UserService.getByEmail(user.email);
-        if (!dbUser) {
-          Alert.alert('Lỗi', 'Không lấy được dữ liệu người dùng');
-          return;
-        }
-        navigation.replace('Home', { user: dbUser });
-      } else {
+
+        navigation.replace('Welcome');
+      } catch (err) {
+        console.log('Splash error: ', err)
         navigation.replace('Welcome');
       }
     }, 1500);
@@ -47,4 +57,3 @@ const styles = StyleSheet.create({
   },
   logo: { width: 500, height: 500, resizeMode: 'contain' },
 });
-

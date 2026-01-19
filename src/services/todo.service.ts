@@ -120,6 +120,7 @@ export class UserService {
     const data = snapshot.val();
     const userId = Object.keys(data)[0];
     const user = data[userId];
+    console.log('👤 USER FROM DB:', userId, user);
 
     if (user.password !== password) {
       throw new Error('INVALID_PASSWORD');
@@ -129,10 +130,12 @@ export class UserService {
       throw new Error('USER_DISABLED');
     }
 
-    return {
+    const result = {
       id: userId,
       ...user,
     };
+    console.log('✅ LOGIN SUCCESS USER:', result);
+    return result;
   }
 }
 
