@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "641808975808",
+    "firebase_url": "https://newtask3-9ca82-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "newtask3-9ca82",
+    "storage_bucket": "newtask3-9ca82.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641808975808:android:64fd7682790c6947efaa25",
+        "android_client_info": {
+          "package_name": "com.newtask3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "641808975808-spaeblhup5bkuq1smlrcfbd5gniq3ks7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.newtask3",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "641808975808-5aq4oo6nthu5jnbp3i97lsaa87jsgoco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAquJNFoQaicWARsGdsF1woxFUy6SDb8KA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641808975808-5aq4oo6nthu5jnbp3i97lsaa87jsgoco.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,90 @@
+[debug] [2026-01-15T07:01:43.974Z] ----------------------------------------------------------------------
+[debug] [2026-01-15T07:01:43.977Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2026-01-15T07:01:43.978Z] CLI Version:   15.3.0
+[debug] [2026-01-15T07:01:43.978Z] Platform:      win32
+[debug] [2026-01-15T07:01:43.978Z] Node Version:  v22.21.1
+[debug] [2026-01-15T07:01:43.978Z] Time:          Thu Jan 15 2026 14:01:43 GMT+0700 (Indochina Time)
+[debug] [2026-01-15T07:01:43.978Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-01-15T07:02:12.577Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-15T07:02:12.577Z] > authorizing via signed-in user (hoangdao2k4kk@gmail.com)
+[debug] [2026-01-15T07:02:12.579Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:12.579Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:12.580Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 [none]
+[debug] [2026-01-15T07:02:13.055Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 200
+[debug] [2026-01-15T07:02:13.056Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 {"projectId":"nguyendao-448d8","projectNumber":"420086724586","displayName":"nguyendao","name":"projects/nguyendao-448d8","resources":{"hostingSite":"nguyendao-448d8","realtimeDatabaseInstance":"nguyendao-448d8-default-rtdb"},"state":"DELETED","etag":"1_0d04416b-7505-41ba-ae13-441de814b000"}
+[info] i  Using project nguyendao-448d8 (nguyendao) . 
+[info] 
+=== Functions Setup
+[debug] [2026-01-15T07:02:13.070Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-15T07:02:13.071Z] > authorizing via signed-in user (hoangdao2k4kk@gmail.com)
+[debug] [2026-01-15T07:02:13.071Z] [iam] checking project nguyendao-448d8 for permissions ["firebase.projects.get"]
+[debug] [2026-01-15T07:02:13.071Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:13.071Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:13.072Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/nguyendao-448d8:testIamPermissions [none]
+[debug] [2026-01-15T07:02:13.072Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/nguyendao-448d8:testIamPermissions x-goog-quota-user=projects/nguyendao-448d8
+[debug] [2026-01-15T07:02:13.072Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nguyendao-448d8:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2026-01-15T07:02:14.059Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/nguyendao-448d8:testIamPermissions 200
+[debug] [2026-01-15T07:02:14.059Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nguyendao-448d8:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+Detected existing codebase(s): default
+
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] +  Wrote y/package.json 
+[info] +  Wrote y/.eslintrc.js 
+[info] +  Wrote y/index.js 
+[info] +  Wrote y/.gitignore 
+[info] 
+=== Database Setup
+[info] 
+[info] Firebase Realtime Database Security Rules allow you to define how your data should be
+[info] structured and when your data can be read from and written to.
+[info] 
+[info] i  database: ensuring required API firebasedatabase.googleapis.com is enabled... 
+[info] 
+[debug] [2026-01-15T07:02:48.151Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:48.152Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:48.152Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 [none]
+[debug] [2026-01-15T07:02:48.513Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 200
+[debug] [2026-01-15T07:02:48.513Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nguyendao-448d8 {"projectId":"nguyendao-448d8","projectNumber":"420086724586","displayName":"nguyendao","name":"projects/nguyendao-448d8","resources":{"hostingSite":"nguyendao-448d8","realtimeDatabaseInstance":"nguyendao-448d8-default-rtdb"},"state":"DELETED","etag":"1_0d04416b-7505-41ba-ae13-441de814b000"}
+[debug] [2026-01-15T07:02:48.513Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:48.514Z] Checked if tokens are valid: true, expires at: 1768464027800
+[debug] [2026-01-15T07:02:48.514Z] >>> [apiv2][query] GET https://firebasedatabase.googleapis.com/v1beta/projects/nguyendao-448d8/locations/-/instances/nguyendao-448d8-default-rtdb [none]
+[debug] [2026-01-15T07:02:49.852Z] <<< [apiv2][status] GET https://firebasedatabase.googleapis.com/v1beta/projects/nguyendao-448d8/locations/-/instances/nguyendao-448d8-default-rtdb 404
+[debug] [2026-01-15T07:02:49.853Z] <<< [apiv2][body] GET https://firebasedatabase.googleapis.com/v1beta/projects/nguyendao-448d8/locations/-/instances/nguyendao-448d8-default-rtdb {"error":{"code":404,"message":"Project has been deleted.","status":"NOT_FOUND"}}
+[debug] [2026-01-15T07:02:49.853Z] Request to https://firebasedatabase.googleapis.com/v1beta/projects/nguyendao-448d8/locations/-/instances/nguyendao-448d8-default-rtdb had HTTP Error: 404, Project has been deleted.
+[debug] [2026-01-15T07:02:49.915Z] FirebaseError: Request to https://firebasedatabase.googleapis.com/v1beta/projects/nguyendao-448d8/locations/-/instances/nguyendao-448d8-default-rtdb had HTTP Error: 404, Project has been deleted.
+    at responseToError (C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:320:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to get instance details for instance: nguyendao-448d8-default-rtdb. See firebase-debug.log for more details.
