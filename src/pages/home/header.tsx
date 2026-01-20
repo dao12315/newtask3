@@ -6,6 +6,7 @@ import { User } from '../../services/todo.service.ts';
 type HeaderProp = {
   user: User;
   onLogout: () => void;
+  editAvatar: (options: { onPicked: (uri: string) => void }) => void;
 };
 
 type IconItem = {
@@ -25,7 +26,7 @@ const iconList = (onLogout: () => void): IconItem[] => [
 
 const hasNotification = true;
 
-export const Header = ({ user, onLogout }: HeaderProp) => {
+export const Header = ({ user, onLogout, editAvatar }: HeaderProp) => {
   const icons = iconList(onLogout);
 
   return (
@@ -70,6 +71,13 @@ export const Header = ({ user, onLogout }: HeaderProp) => {
           />
 
           <Pressable
+            onPress={() =>
+              editAvatar({
+                onPicked: (uri: string) => {
+                  console.log('avatar picked:', uri);
+                },
+              })
+            }
             style={({ pressed }) => [
               {
                 position: 'absolute',

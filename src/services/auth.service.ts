@@ -1,5 +1,8 @@
 import auth, { GoogleAuthProvider } from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 export async function loginWithGoogle() {
   try {
@@ -9,11 +12,17 @@ export async function loginWithGoogle() {
     });
 
     // 2. Google Sign-In
-    // const signOut = await GoogleSignin.signOut();
+    await GoogleSignin.signOut();
     const signInResult = await GoogleSignin.signIn();
+    if (!signInResult) {
+      return null;
+    }
 
     // 3. Lấy idToken (CÁCH ĐÚNG)
-    const idToken = signInResult.data?.idToken ?? signInResult.data?.idToken;
+    const idToken = signInResult.data?.idToken
+    if (!idToken) {
+      return null;
+    }
     console.log(idToken);
     if (!idToken) {
       throw new Error('Google Sign-In failed: No ID Token');
@@ -33,8 +42,12 @@ export async function loginWithGoogle() {
 
     return user;
   } catch (error: any) {
-    console.error(error);
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      console.log('User pressed cancel!');
+      return null;
+    }
 
+    console.error(error);
     throw error;
   }
 }

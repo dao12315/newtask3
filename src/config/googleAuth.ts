@@ -6,7 +6,6 @@ export function configureGoogleSignIn() {
       '641808975808-5aq4oo6nthu5jnbp3i97lsaa87jsgoco.apps.googleusercontent.com',
     offlineAccess: false,
   });
-
 }
 
 

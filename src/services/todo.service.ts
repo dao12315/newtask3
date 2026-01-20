@@ -1,4 +1,5 @@
 import database from '@react-native-firebase/database';
+import { comparePassword, hasPassword } from '../utils/encoding.password';
 
 export type User = {
   id: string;
@@ -25,34 +26,14 @@ export class UserService {
     dateOfBirth: number,
     avatar: string,
   ): Promise<any> {
+    const hashedPassword = await hasPassword(password);
     const newRef = this.ref.push();
     await newRef.set({
       name,
-      password,
+      password: hashedPassword,
       email,
       phoneNumber,
       dateOfBirth,
-      createAt: Date.now(),
-      updateAt: Date.now(),
-      status: true,
-      avatar,
-    });
-    return newRef.key!;
-  }
-
-  static async createGoogle(
-    name: string,
-    password: string,
-    email: string,
-    avatar: string,
-  ): Promise<any> {
-    const newRef = this.ref.push();
-    await newRef.set({
-      name,
-      password,
-      email,
-      phoneNumber: '',
-      dateOfBirth: '',
       createAt: Date.now(),
       updateAt: Date.now(),
       status: true,
@@ -122,7 +103,8 @@ export class UserService {
     const user = data[userId];
     console.log('👤 USER FROM DB:', userId, user);
 
-    if (user.password !== password) {
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
       throw new Error('INVALID_PASSWORD');
     }
 

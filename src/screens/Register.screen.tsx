@@ -80,6 +80,9 @@ export default function RegisterScreen({ navigation }: Props) {
   const handleGoogleLogin = async (navigation: any) => {
     try {
       const user = await loginWithGoogle();
+      if (!user) {
+        return;
+      }
       // ⛔ BẮT BUỘC kiểm tra
       if (!user.email) {
         Alert.alert('Lỗi', 'Không lấy được email từ Google');
