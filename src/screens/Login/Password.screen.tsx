@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { Pressable, TextInput, View, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import TextComponent from '../component/TextComponent';
+import TextComponent from '../../component/TextComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/Navigator';
+import { RootStackParamList } from '../../routes/Navigator';
 import { useRoute } from '@react-navigation/native';
-import { UserService } from '../services/todo.service';
-import { sendEmail } from '../services/mail.service';
-import { Avatar } from 'react-native-paper';
+import { UserService } from '../../services/todo.service';
+import { sendEmail } from '../../services/mail.service';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Password'>;
 

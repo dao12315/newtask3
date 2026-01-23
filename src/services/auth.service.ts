@@ -12,21 +12,18 @@ export async function loginWithGoogle() {
     });
 
     // 2. Google Sign-In
-    await GoogleSignin.signOut();
+    // await GoogleSignin.signOut();
     const signInResult = await GoogleSignin.signIn();
     if (!signInResult) {
       return null;
     }
 
     // 3. Lấy idToken (CÁCH ĐÚNG)
-    const idToken = signInResult.data?.idToken
+    const idToken = signInResult.data?.idToken;
     if (!idToken) {
       return null;
     }
-    console.log(idToken);
-    if (!idToken) {
-      throw new Error('Google Sign-In failed: No ID Token');
-    }
+    console.log('ID_TOKEN: ', idToken);
 
     // 4. Firebase credential
     const googleCredential = GoogleAuthProvider.credential(idToken);

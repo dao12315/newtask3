@@ -10,12 +10,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import TextComponent from '../component/TextComponent';
-import { IMAGES } from '../assets';
+import TextComponent from '../../component/TextComponent';
+import { IMAGES } from '../../assets';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/Navigator';
-import { isValidEmail, UserService } from '../services/todo.service';
-import { loginWithGoogle } from '../services/auth.service';
+import { RootStackParamList } from '../../routes/Navigator';
+import { isValidEmail, UserService } from '../../services/todo.service';
+import { loginWithGoogle } from '../../services/auth.service';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 

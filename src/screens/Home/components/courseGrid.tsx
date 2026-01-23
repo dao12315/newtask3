@@ -1,15 +1,28 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { RootStackParamList } from '../../../routes/Navigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-const courseIcons = [
-  { name: 'bandage', label: 'Thường gặp' },
-  { name: 'heart-pulse', label: 'Bệnh nền' },
-  { name: 'brain', label: 'Phân biệt' },
-  { name: 'human-child', label: 'Bệnh nhi' },
+type CourseGridProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+};
+type CourseScreen = 'ThuongGap' | 'BenhNen' | 'PhanBiet' | 'BenhNhi';
+
+type CourseItem = {
+  name: string;
+  label: string;
+  screen: CourseScreen;
+};
+
+const courseIcons: CourseItem[] = [
+  { name: 'bandage', label: 'Thường gặp', screen: 'ThuongGap' },
+  { name: 'heart-pulse', label: 'Bệnh nền', screen: 'BenhNen' },
+  { name: 'brain', label: 'Phân biệt', screen: 'PhanBiet' },
+  { name: 'human-child', label: 'Bệnh nhi', screen: 'BenhNhi' },
 ];
 
-export const CourseGrid = () => {
+export const CourseGrid = ({ navigation }: CourseGridProps) => {
   return (
     <View
       style={{
@@ -38,6 +51,7 @@ export const CourseGrid = () => {
           return (
             <Pressable
               key={item.label}
+              onPress={() => navigation.navigate(item.screen)}
               style={({ pressed }) => [
                 {
                   width: 150,

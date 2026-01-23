@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import TextComponent from '../component/TextComponent';
-import { IMAGES } from '../assets';
+import TextComponent from '../../component/TextComponent';
+import { IMAGES } from '../../assets';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/Navigator';
-import { UserService } from '../services/todo.service';
-import { configureGoogleSignIn } from '../config/googleAuth';
-import { loginWithGoogle } from '../services/auth.service';
-import { AuthStorage } from '../utils/auth.storage';
+import { RootStackParamList } from '../../routes/Navigator';
+import { UserService } from '../../services/todo.service';
+import { loginWithGoogle } from '../../services/auth.service';
+import { AuthStorage } from '../../utils/auth.storage';
+import { configureGoogleSignIn } from '../../config/googleAuth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -25,15 +25,16 @@ export default function LoginScreen({ navigation }: Props) {
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  useEffect(() => {
-    configureGoogleSignIn();
-  }, []);
+    useEffect(() => {
+      configureGoogleSignIn();
+    }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('vui lòng nhập đủ thông tin!');
       return;
     }
+
     try {
       const user = await UserService.login(email, password);
       console.log('🟢 LOGIN OK – USER:', user);

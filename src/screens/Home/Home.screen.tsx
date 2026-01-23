@@ -6,19 +6,19 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
-import { Header } from '../pages/home/header';
-import { Banner } from '../pages/home/banner';
-import { CourseGrid } from '../pages/home/courseGrid';
-import { Suggestion } from '../pages/home/suggestion';
-import { Service } from '../pages/home/service';
-import { News } from '../pages/home/news';
-import { Update } from '../pages/home/update';
-import { Membership } from '../pages/home/membership';
-import { BottomTabBar } from '../pages/home/bottomTabBar';
-import { RootStackParamList } from '../routes/Navigator';
-import { configureGoogleSignIn } from '../config/googleAuth';
+import { Header } from './components/header';
+import { Banner } from './components/banner';
+import { CourseGrid } from './components/courseGrid';
+import { Suggestion } from './components/suggestion';
+import { Service } from './components/service';
+import { News } from './components/news';
+import { Update } from './components/update';
+import { Membership } from './components/membership';
+import { BottomTabBar } from './components/bottomTabBar';
+import { RootStackParamList } from '../../routes/Navigator';
+import { configureGoogleSignIn } from '../../config/googleAuth';
 import auth from '@react-native-firebase/auth';
-import { AuthStorage } from '../utils/auth.storage';
+import { AuthStorage } from '../../utils/auth.storage';
 
 type HomeRouteProps = RouteProp<RootStackParamList, 'Home'>;
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -41,7 +41,7 @@ export default function HomeScreen() {
       await AuthStorage.clear();
 
       // 2️⃣ Logout Google NẾU có user Google
-      const googleUser = await GoogleSignin.getCurrentUser();
+      const googleUser = GoogleSignin.getCurrentUser();
       if (googleUser) {
         await GoogleSignin.signOut();
       }
@@ -110,7 +110,7 @@ export default function HomeScreen() {
         <Header user={user} onLogout={logOut} editAvatar={handleEditAvatar}/>
         <View style={{ paddingHorizontal: 15, gap: 15, paddingTop: 10 }}>
           <Banner />
-          <CourseGrid />
+          <CourseGrid navigation={navigation}/>
           <Suggestion />
           <Service />
           <News />

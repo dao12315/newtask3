@@ -14,7 +14,7 @@ export const Banner = () => {
       }}
     >
       <Image
-        source={require('../../assets/img/cac-buoc-cap-cuu-ngung-tim-ngung-tho.jpg')}
+        source={require('../../../assets/img/cac-buoc-cap-cuu-ngung-tim-ngung-tho.jpg')}
         style={{
           height: '100%',
           width: '100%',

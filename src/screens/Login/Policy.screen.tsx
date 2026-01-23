@@ -2,9 +2,9 @@ import React from 'react';
 import { Pressable, ScrollView, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import TextComponent from '../component/TextComponent';
+import TextComponent from '../../component/TextComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/Navigator';
+import { RootStackParamList } from '../../routes/Navigator';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Policy'>;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { IMAGES } from '../../assets';
+import { IMAGES } from '../../../assets';
 
 export const Membership = () => {
   return (

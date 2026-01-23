@@ -1,21 +1,21 @@
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 
-const suggestion = [
+const news = [
   {
-    img: require('../../assets/img/xu-ly-vet-bong.jpg'),
-    label: 'Cách xử lý vết bỏng tại nhà đơn giản hiệu quả dễ thực hiện',
-    description: 'Sơ cứu vết bỏng kịp thời và đúng cách là biện pháp...',
+    img: require('../../../assets/img/bao-yagi.jpg'),
+    label: 'Bão Yagi vừa qua, bão khác lại đến',
+    description: 'Kỹ năng phòng chống, ứng phó trong, trước và sau bão',
   },
   {
-    img: require('../../assets/img/ran-doc.webp'),
-    label: 'Phân biệt rắn đọc và rắn không độc cắn, cách sở cứu ban đầu',
+    img: require('../../../assets/img/pccc.jpg'),
+    label: 'Nâng cao hiệu quả công tác phòng cháy chữa cháy',
     description:
-      'Tùy theo từng loại rắn cắn sẽ có nhưng biểu hiện đặc trưng khác nhau',
+      'Tập huấn nghiệp vụ công tác phòng cháy chữa cháy cho trường học. Tập huấn nghiệp vụ công tác phòng cháy chữa cháy cho trường học. Tập huấn nghiệp vụ công tác phòng cháy chữa cháy cho trường học',
   },
 ];
 
-export const Suggestion = () => {
+export const News = () => {
   return (
     <View
       style={{
@@ -30,7 +30,7 @@ export const Suggestion = () => {
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: '#c32f30', fontWeight: '600' }}>Gợi ý</Text>
+        <Text style={{ color: '#c32f30', fontWeight: '600' }}>Tin tức</Text>
         <Text style={{ color: '#c32f30', fontWeight: '600' }}>Khác</Text>
       </View>
       <View
@@ -46,7 +46,7 @@ export const Suggestion = () => {
           gap: 10,
         }}
       >
-        {suggestion.map((item, index) => {
+        {news.map((item, index) => {
           return (
             <Pressable
               key={index}
@@ -63,7 +63,7 @@ export const Suggestion = () => {
                   flexDirection: 'row',
                   overflow: 'hidden',
                 },
-                pressed && { opacity: 0.7 },
+                pressed && { opacity: 0.5 },
               ]}
             >
               <Image
@@ -78,7 +78,6 @@ export const Suggestion = () => {
               <View
                 style={{
                   flex: 1,
-                  overflow: 'hidden',
                 }}
               >
                 <Text
@@ -98,8 +97,7 @@ export const Suggestion = () => {
                   style={{
                     color: '#000000ff',
                     fontSize: 12,
-
-                    fontWeight: '300',
+                    fontWeight: '200',
                   }}
                 >
                   {item.description}

@@ -1,7 +1,7 @@
 import { Image, Pressable, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { IMAGES } from '../../assets/index.ts';
-import { User } from '../../services/todo.service.ts';
+import { IMAGES } from '../../../assets/index.ts';
+import { User } from '../../../services/todo.service.ts';
 
 type HeaderProp = {
   user: User;
