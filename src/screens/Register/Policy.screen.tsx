@@ -8,8 +8,7 @@ import { RootStackParamList } from '../../routes/Navigator';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Policy'>;
 
-
-export default function PolicyScreen({navigation}: Props) {
+export default function PolicyScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.screen}>

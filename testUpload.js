@@ -1,7 +1,7 @@
 require('dotenv').config();
 const cloudinary = require('./cloudinary.config');
 
-async function uploadImageTest() {
+export async function uploadImageTest() {
   try {
     const result = await cloudinary.uploader.upload(
       './src/assets/img/google.jpg', // đường dẫn ảnh local
