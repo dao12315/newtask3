@@ -8,18 +8,69 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes/Navigator';
 import { stylesLogin } from './login.styles';
 import { useLogin } from './useLogin';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-export default function LoginScreen({ navigation }: Props) {
+export default function LoginScreen() {
+    const navigation = useNavigation<NavigationProp<any>>();
+  
   const {
+    email,
+    password,
     hidden,
-    setHidden,
     setEmail,
     setPassword,
-    handleLogin,
-    handleGoogleLogin,
-  } = useLogin(navigation);
+    setHidden,
+    loginWithEmail,
+    loginWithGoogle,
+  } = useLogin();
+
+  const handleLogin = async () => {
+    try {
+      await loginWithEmail();
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } catch (error: any) {
+      switch (error.message) {
+        case 'MISSING_CREDENTIALS':
+          Alert.alert('Vui lòng nhập đủ thông tin');
+          break;
+        case 'EMAIL_NOT_FOUND':
+          Alert.alert('Email không đúng');
+          break;
+        case 'INVALID_PASSWORD':
+          Alert.alert('Mật khẩu không đúng');
+          break;
+        case 'USER_DISABLED':
+          Alert.alert('Tài khoản bị khóa');
+          break;
+        default:
+          Alert.alert('Có lỗi, vui lòng thử lại');
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await loginWithGoogle();
+
+      if (result.type === 'EXISTING_USER') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+        return;
+      }
+
+      navigation.navigate('Password', result.payload);
+    } catch (e: any) {
+      Alert.alert('Lỗi', e.message ?? 'Google login failed');
+    }
+  };
 
   return (
     <SafeAreaView style={stylesLogin.safe}>

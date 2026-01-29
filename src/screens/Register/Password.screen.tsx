@@ -19,54 +19,46 @@ export default function PasswordScreen({ navigation }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const { avatar, name, email, phoneNumber, dateOfBirth } = route.params;
 
-const handleRegister = async () => {
-  if (!password || !confirmPassword) {
-    Alert.alert('Vui lòng nhập đầy đủ');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    Alert.alert('Mật khẩu không khớp');
-    return;
-  }
-
-  try {
-    // 1. TẠO USER
-    const userId = await UserService.create(
-      name,
-      password,
-      email,
-      phoneNumber,
-      dateOfBirth,
-      avatar,
-    );
-
-    console.log('Created userId:', userId);
-
-    // 2. GỬI EMAIL (OPTIONAL – KHÔNG BLOCK LOGIN)
-    const ok = await sendEmail(email);
-    if (!ok) {
-      Alert.alert('Cảnh báo', 'Tạo tài khoản thành công nhưng gửi email thất bại');
+  const handleRegister = async () => {
+    if (!password || !confirmPassword) {
+      Alert.alert('Vui lòng nhập đầy đủ');
+      return;
     }
 
-    // 3. LOGIN HOÀN TẤT → HOME
-    navigation.replace('Home', {
-      user: {
-        id: userId,
+    if (password !== confirmPassword) {
+      Alert.alert('Mật khẩu không khớp');
+      return;
+    }
+
+    try {
+      // 1. TẠO USER
+      const userId = await UserService.create(
         name,
+        password,
         email,
-        avatar,
         phoneNumber,
         dateOfBirth,
-        status: true,
-      } as any,
-    });
-  } catch (err) {
-    console.log(err);
-    Alert.alert('Lỗi', 'Đăng ký thất bại');
-  }
-};
+        avatar,
+      );
 
+      console.log('Created userId:', userId);
+
+      // 2. GỬI EMAIL (OPTIONAL – KHÔNG BLOCK LOGIN)
+      const ok = await sendEmail(email);
+      if (!ok) {
+        Alert.alert(
+          'Cảnh báo',
+          'Tạo tài khoản thành công nhưng gửi email thất bại',
+        );
+      }
+
+      // 3. LOGIN HOÀN TẤT → HOME
+      navigation.replace('Home');
+    } catch (err) {
+      console.log(err);
+      Alert.alert('Lỗi', 'Đăng ký thất bại');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
