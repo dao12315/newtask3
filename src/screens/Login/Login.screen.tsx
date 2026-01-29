@@ -150,7 +150,7 @@ export default function LoginScreen({ navigation }: Props) {
               stylesLogin.socialBtn,
               pressed && stylesLogin.pressed,
             ]}
-            onPress={() => handleGoogleLogin(navigation)}
+            onPress={() => handleGoogleLogin()}
           >
             <Image source={IMAGES.google} style={stylesLogin.socialIconGg} />
             <TextComponent style={stylesLogin.socialText}>Google</TextComponent>

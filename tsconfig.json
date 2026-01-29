@@ -1,6 +1,7 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
+    "verbatimModuleSyntax": false,
     "types": ["jest"],
   },
   "include": ["**/*.ts", "**/*.tsx"],

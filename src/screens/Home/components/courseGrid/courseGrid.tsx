@@ -1,12 +1,11 @@
 import React from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { RootStackParamList } from '../../../../routes/Navigator';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../routes/Navigator';
 
-type CourseGridProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList>;
-};
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 type CourseScreen = 'ThuongGap' | 'BenhNen' | 'PhanBiet' | 'BenhNhi';
 
@@ -23,7 +22,9 @@ const courseIcons: CourseItem[] = [
   { name: 'human-child', label: 'Bệnh nhi', screen: 'BenhNhi' },
 ];
 
-export const CourseGrid = ({ navigation }: CourseGridProps) => {
+export const CourseGrid = () => {
+  const navigation = useNavigation<Nav>();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Khóa học</Text>
@@ -48,6 +49,7 @@ export const CourseGrid = ({ navigation }: CourseGridProps) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

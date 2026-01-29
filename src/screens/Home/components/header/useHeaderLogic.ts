@@ -1,129 +1,110 @@
 import { Alert } from 'react-native';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { AuthStorage } from '../../../../utils/auth.storage';
+import {
+  getDatabase,
+  ref,
+  query,
+  orderByChild,
+  equalTo,
+  get,
+  update,
+} from '@react-native-firebase/database';
+import { getApp } from '@react-native-firebase/app';
+import {
+  launchCamera,
+  launchImageLibrary,
+  ImagePickerResponse,
+} from 'react-native-image-picker';
 import { uploadAvatarToCloudinary } from '../../../../utils/cloudinary';
+import { useUserStore } from '../../../../stores/user.store';
+import { AuthStorage } from '../../../../stores/auth.storage';
 
-type PickAvatarOptions = {
-  onPicked?: (url: string) => void;
-};
+export const useHeaderLogic = () => {
+  // ✅ reactive store
+  const user = useUserStore(state => state.user);
+  const setUser = useUserStore(state => state.setUser);
 
-export const useHeaderLogic = (navigation: any) => {
-  const logOut = async () => {
-    try {
-      await AuthStorage.clear();
+  const db = getDatabase(getApp());
 
-      const googleUser = GoogleSignin.getCurrentUser();
-      if (googleUser) {
-        await GoogleSignin.signOut();
-      }
-
-      if (auth().currentUser) {
-        await auth().signOut();
-      }
-
-      Alert.alert('Đã đăng xuất');
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Welcome' }],
-      });
-    } catch (error) {
-      console.log('Logout error:', error);
-    }
-  };
-
-  /**
-   * ✅ UPDATE AVATAR ĐÚNG THEO CẤU TRÚC DB HIỆN TẠI
-   * Query user theo email → lấy key → update
-   */
-  const updateAvatarFirebase = async (avatarUrl: string) => {
-    const user = auth().currentUser;
-    if (!user?.email) {
-      throw new Error('User not logged in or missing email');
-    }
-
-    // 1. Tìm user trong Realtime DB theo email
-    const snapshot = await database()
-      .ref('/users')
-      .orderByChild('email')
-      .equalTo(user.email)
-      .once('value');
+  /* ===================== FIREBASE UPDATE ===================== */
+  const updateAvatarFirebase = async (email: string, avatarUrl: string) => {
+    const usersRef = ref(db, 'users');
+    const q = query(usersRef, orderByChild('email'), equalTo(email));
+    const snapshot = await get(q);
 
     if (!snapshot.exists()) {
-      throw new Error('User not found in database');
+      throw new Error('USER_NOT_FOUND');
     }
 
-    // 2. Lấy key thật của user (-OjMDC3Qca-...)
-    const data = snapshot.val();
-    const userKey = Object.keys(data)[0];
-
-    // 3. Update avatar
-    await database()
-      .ref(`/users/${userKey}`)
-      .update({
+    snapshot.forEach(child => {
+      update(ref(db, `users/${child.key}`), {
         avatar: avatarUrl,
         updateAt: Date.now(),
       });
+      return true;
+    });
   };
 
-  const handleEditAvatar = ({ onPicked }: PickAvatarOptions) => {
+  /* ===================== PICK + UPDATE ===================== */
+  const pickAndUpdateAvatar = async (
+    picker: () => Promise<ImagePickerResponse>,
+  ) => {
+    if (!user?.email) {
+      Alert.alert('Lỗi', 'Chưa đăng nhập');
+      return;
+    }
+
+    try {
+      const result = await picker();
+      const uri = result.assets?.[0]?.uri;
+      if (!uri) return;
+
+      // 1. Upload cloudinary
+      const avatarUrl = await uploadAvatarToCloudinary(uri);
+
+      // 2. Update firebase
+      await updateAvatarFirebase(user.email, avatarUrl);
+
+      // 3. Update store + storage
+      const updatedUser = { ...user, avatar: avatarUrl };
+      setUser(updatedUser);
+      await AuthStorage.saveUser(updatedUser);
+
+      Alert.alert('Thành công', 'Đã cập nhật ảnh đại diện');
+    } catch (error) {
+      console.log('[useHeaderLogic][avatar] error:', error);
+      Alert.alert('Lỗi', 'Không thể cập nhật avatar');
+    }
+  };
+
+  /* ===================== UI HANDLER ===================== */
+  const handleEditAvatar = () => {
     Alert.alert('Chọn ảnh đại diện', 'Bạn muốn chọn ảnh từ đâu?', [
       {
         text: 'Chụp ảnh',
-        onPress: async () => {
-          try {
-            const result = await launchCamera({
+        onPress: () =>
+          pickAndUpdateAvatar(() =>
+            launchCamera({
               mediaType: 'photo',
               quality: 0.8,
               saveToPhotos: true,
-            });
-
-            const uri = result.assets?.[0]?.uri;
-            if (!uri) return;
-
-            const avatarUrl = await uploadAvatarToCloudinary(uri);
-            await updateAvatarFirebase(avatarUrl);
-            onPicked?.(avatarUrl);
-
-            Alert.alert('Thành công', 'Đã cập nhật ảnh đại diện');
-          } catch (error) {
-            console.error(error);
-            Alert.alert('Lỗi', 'Không thể cập nhật avatar');
-          }
-        },
+            }),
+          ),
       },
       {
         text: 'Thư viện',
-        onPress: async () => {
-          try {
-            const result = await launchImageLibrary({
+        onPress: () =>
+          pickAndUpdateAvatar(() =>
+            launchImageLibrary({
               mediaType: 'photo',
               quality: 0.8,
-            });
-
-            const uri = result.assets?.[0]?.uri;
-            if (!uri) return;
-
-            const avatarUrl = await uploadAvatarToCloudinary(uri);
-            await updateAvatarFirebase(avatarUrl);
-            onPicked?.(avatarUrl);
-
-            Alert.alert('Thành công', 'Đã cập nhật ảnh đại diện');
-          } catch (error) {
-            console.error(error);
-            Alert.alert('Lỗi', 'Không thể cập nhật avatar');
-          }
-        },
+            }),
+          ),
       },
       { text: 'Huỷ', style: 'cancel' },
     ]);
   };
 
   return {
-    logOut,
     handleEditAvatar,
   };
 };

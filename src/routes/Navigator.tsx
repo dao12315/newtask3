@@ -8,8 +8,6 @@ import LoginScreen from '../screens/Login/Login.screen.tsx';
 import RegisterScreen from '../screens/Register/Register.screen.tsx';
 import PassWordScreen from '../screens/Register/Password.screen.tsx';
 import PolicyScreen from '../screens/Register/Policy.screen.tsx';
-import SuccessfulScreen from '../screens/Successful.screen.tsx';
-import { User } from '../services/todo.service.ts';
 import ThuongGapScreen from '../screens/Courses/ThuongGap/ThuongGap.screen.tsx';
 import BenhNenScreen from '../screens/Courses/BenhNen/BenhNen.screen.tsx';
 import PhanBietScreen from '../screens/Courses/PhanBiet/PhanBiet.screen.tsx';
@@ -18,7 +16,7 @@ import OnBoardingScreen from '../screens/OnBoarding/OnBoarding.screen.tsx';
 
 export type RootStackParamList = {
   Splash: undefined;
-  Home: { user: User };
+  Home: undefined;
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
@@ -35,7 +33,6 @@ export type RootStackParamList = {
     avatar?: any;
   };
   Policy: undefined;
-  Successful: undefined;
   ThuongGap: undefined;
   BenhNen: undefined;
   PhanBiet: undefined;
@@ -60,7 +57,6 @@ export default function Navigator() {
         <Stack.Screen name={'Register'} component={RegisterScreen} />
         <Stack.Screen name={'Password'} component={PassWordScreen} />
         <Stack.Screen name={'Policy'} component={PolicyScreen} />
-        <Stack.Screen name={'Successful'} component={SuccessfulScreen} />
         <Stack.Screen name={'ThuongGap'} component={ThuongGapScreen} />
         <Stack.Screen name={'BenhNen'} component={BenhNenScreen} />
         <Stack.Screen name={'PhanBiet'} component={PhanBietScreen} />

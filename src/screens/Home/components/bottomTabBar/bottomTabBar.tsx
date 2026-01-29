@@ -10,13 +10,17 @@ const bottomTabs = [
   { key: 'profile', label: 'Hồ sơ', icon: 'account' },
 ];
 
-export const BottomTabBar = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+type BottomTabBarProps = {
+  activeTab: HomeTabKey;
+  onChange: (tab: HomeTabKey) => void;
+};
+export type HomeTabKey = 'home' | 'qa' | 'profile';
 
+export const BottomTabBar = ({ activeTab, onChange }: BottomTabBarProps) => {
   return (
     <View style={styles.container}>
-      {bottomTabs.map((item, index) => {
-        const isFocused = activeIndex === index;
+      {bottomTabs.map(item => {
+        const isFocused = activeTab === item.key;
 
         if (item.isCenter) {
           return (
@@ -31,18 +35,18 @@ export const BottomTabBar = () => {
         return (
           <TouchableOpacity
             key={item.key}
-            onPress={() => setActiveIndex(index)}
+            onPress={() => onChange(item.key as HomeTabKey)}
             style={styles.tabItem}
           >
             <Icon
               name={item.icon}
               size={25}
-              color={isFocused ? '#c32f30' : '#777777ff'}
+              color={isFocused ? '#c32f30' : '#777'}
             />
             <Text
               style={[
                 styles.label,
-                { color: isFocused ? '#c32f30' : '#777777ff' },
+                { color: isFocused ? '#c32f30' : '#777' },
               ]}
             >
               {item.label}
@@ -53,6 +57,7 @@ export const BottomTabBar = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

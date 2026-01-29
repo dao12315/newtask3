@@ -1,14 +1,15 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, Pressable, Text, View, StyleSheet } from 'react-native';
 import { RootStackParamList } from '../../../../routes/Navigator';
 import { IMAGES } from '../../../../assets';
 
-type BannerProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList>;
-};
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-export const Banner = ({ navigation }: BannerProps) => {
+export const Banner = () => {
+  const navigation = useNavigation<Nav>();
+
   return (
     <View style={styles.container}>
       <Image

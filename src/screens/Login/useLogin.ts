@@ -1,32 +1,41 @@
 import { Alert } from 'react-native';
 import { loginWithGoogle } from '../../services/auth.service';
-import { UserService } from '../../services/todo.service';
-import { AuthStorage } from '../../utils/auth.storage';
+import { User, UserService } from '../../services/todo.service';
+import { AuthStorage } from '../../stores/auth.storage';
 import { useEffect, useState } from 'react';
 import { configureGoogleSignIn } from '../../config/googleAuth';
+import { AppUser } from '../../models/app-user';
+import { useUserStore } from '../../stores/user.store';
+import { normalizeUser } from '../../utils/normalize-user';
 
 export function useLogin(navigation: any) {
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   useEffect(() => {
     configureGoogleSignIn();
   }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('vui lòng nhập đủ thông tin!');
+      Alert.alert('Vui lòng nhập đủ thông tin!');
       return;
     }
 
     try {
-      const user = await UserService.login(email, password);
-      console.log('🟢 LOGIN OK – USER:', user);
-      await AuthStorage.saveUser(user);
-      console.log('💾 SAVED USER TO STORAGE');
+      const dbUser = await UserService.login(email, password);
+      const appUser = normalizeUser(dbUser);
+
+      // ✅ 1. LƯU RAM (Zustand)
+      useUserStore.getState().setUser(appUser);
+
+      // ✅ 2. LƯU DISK
+      await AuthStorage.saveUser(appUser);
+
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home', params: { user: user } }],
+        routes: [{ name: 'Home' }],
       });
     } catch (error: any) {
       switch (error.message) {
@@ -45,42 +54,50 @@ export function useLogin(navigation: any) {
     }
   };
 
-  const handleGoogleLogin = async (navigation: any) => {
+  const handleGoogleLogin = async () => {
     try {
-      const user = await loginWithGoogle();
-      if (!user) return;
-
-      // ⛔ BẮT BUỘC kiểm tra
-      if (!user.email) {
+      const googleUser = await loginWithGoogle();
+      if (!googleUser || !googleUser.email) {
         Alert.alert('Lỗi', 'Không lấy được email từ Google');
         return;
       }
-      const isExists = await UserService.isEmailExists(user.email);
+
+      const isExists = await UserService.isEmailExists(googleUser.email);
+
+      // ✅ USER ĐÃ CÓ TRONG DB
       if (isExists) {
-        const dbUser = await UserService.getByEmail(user.email);
+        const dbUser = await UserService.getByEmail(googleUser.email);
         if (!dbUser) {
           Alert.alert('Lỗi', 'Không lấy được dữ liệu người dùng');
           return;
         }
+
+        const appUser = normalizeUser(dbUser);
+
+        // 🔥 RAM + DISK
+        useUserStore.getState().setUser(appUser);
+        await AuthStorage.saveUser(appUser);
+
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Home', params: { user: dbUser } }],
+          routes: [{ name: 'Home' }],
         });
-
         return;
       }
+
+      // 🆕 USER CHƯA CÓ → SET PASSWORD
       navigation.navigate('Password', {
-        avatar: user.photoURL,
-        name: user.displayName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        dateOfBirth: '',
+        avatar: googleUser.photoURL ?? null,
+        name: googleUser.displayName ?? '',
+        email: googleUser.email,
+        phoneNumber: null,
+        dateOfBirth: null,
       });
     } catch (e: any) {
-      console.log(e);
       Alert.alert('Lỗi', e.message ?? 'Google login failed');
     }
   };
+
   return {
     hidden,
     email,

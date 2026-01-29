@@ -2,43 +2,59 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, Image, Alert } from 'react-native';
 import type { RootStackParamList } from '../routes/Navigator';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import auth from '@react-native-firebase/auth';
-import { UserService } from '../services/todo.service';
-import { AuthStorage } from '../utils/auth.storage';
+import { getAuth } from '@react-native-firebase/auth';
+import { User, UserService } from '../services/todo.service';
+import { AuthStorage } from '../stores/auth.storage';
+import { AppUser } from '../models/app-user';
+import { useUserStore } from '../stores/user.store';
+import { normalizeUser } from '../utils/normalize-user';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
 export default function SplashScreen({ navigation }: Props) {
+  const setUser = useUserStore(state => state.setUser);
+
   useEffect(() => {
     const timer = setTimeout(async () => {
       try {
-        //Check session local (email + google)
+        // 1️⃣ CHECK LOCAL STORAGE
         const storedUser = await AuthStorage.getUser();
         if (storedUser) {
-          navigation.replace('Home', { user: storedUser });
+          // 🔥 set store để Home dùng
+          setUser(storedUser);
+
+          navigation.replace('Home');
           return;
         }
-        //Check firebase auth
-        const firebaseUser = auth().currentUser;
+
+        // 2️⃣ CHECK FIREBASE AUTH (fallback)
+        const firebaseUser = getAuth().currentUser;
 
         if (firebaseUser?.email) {
           const dbUser = await UserService.getByEmail(firebaseUser.email);
 
           if (dbUser) {
-            await AuthStorage.saveUser(dbUser); //đồng bộ lại storage
-            navigation.replace('Home', {user: dbUser})
+            const appUser = normalizeUser(dbUser);
+
+            // 🔥 sync lại storage + store
+            await AuthStorage.saveUser(appUser);
+            setUser(appUser);
+
+            navigation.replace('Home');
             return;
           }
         }
 
+        // 3️⃣ CHƯA ĐĂNG NHẬP
         navigation.replace('Welcome');
       } catch (err) {
-        console.log('Splash error: ', err)
+        console.log('Splash error:', err);
         navigation.replace('Welcome');
       }
     }, 1500);
+
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, setUser]);
 
   return (
     <View style={styles.container}>

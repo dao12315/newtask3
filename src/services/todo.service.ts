@@ -84,6 +84,31 @@ export class UserService {
     };
   }
 
+  // UPDATE
+  static async update(
+    userId: string,
+    data: Partial<{
+      name: string | null;
+      email: string | null;
+      phoneNumber: number | null;
+      dateOfBirth: string | number | null;
+      avatar: string | null;
+      status: boolean;
+    }>,
+    userStore : any
+  ): Promise<void> {
+    if (!userId) {
+      throw new Error('USER_ID_REQUIRED');
+    }
+
+    await this.ref.child(userId).update({
+      ...data,
+      updateAt: Date.now(),
+    });
+    const {name , phoneNumber , dateOfBirth}= data
+    userStore.setProfile({name, dateOfBirth: typeof dateOfBirth === 'string' ? parseInt(dateOfBirth) : dateOfBirth, phoneNumber})
+  }
+
   //LOGIN
   static async login(email: string, password: string): Promise<User> {
     const normalizedEmail = email.trim().toLowerCase(); // chuẩn hóa khoảng trắng và chữ hoa
@@ -119,6 +144,7 @@ export class UserService {
     console.log('✅ LOGIN SUCCESS USER:', result);
     return result;
   }
+
 }
 
 export function isValidEmail(email: string): boolean {
