@@ -1,7 +1,7 @@
 // useLogin.ts
 import { useEffect, useState } from 'react';
 import { configureGoogleSignIn } from '../../config/googleAuth';
-import { LoginService } from './login.service';
+import { loginService } from './login.service';
 
 export function useLogin() {
   const [hidden, setHidden] = useState(true);
@@ -17,11 +17,11 @@ export function useLogin() {
       throw new Error('MISSING_CREDENTIALS');
     }
 
-    await LoginService.loginWithEmail(email, password);
+    await loginService.loginWithEmail(email, password);
   };
 
   const loginWithGoogle = async () => {
-    return LoginService.loginWithGoogle();
+    return loginService.loginWithGoogle();
   };
 
   return {

@@ -16,8 +16,6 @@ export default function LoginScreen() {
     const navigation = useNavigation<NavigationProp<any>>();
   
   const {
-    email,
-    password,
     hidden,
     setEmail,
     setPassword,

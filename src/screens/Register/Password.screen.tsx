@@ -5,13 +5,19 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComponent from '../../component/TextComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes/Navigator';
-import { useRoute } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { UserService } from '../../services/todo.service';
 import { sendEmail } from '../../services/mail.service';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Password'>;
 
-export default function PasswordScreen({ navigation }: Props) {
+export default function PasswordScreen() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
   const route = useRoute<any>();
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirm, setHideConfirm] = useState(true);
@@ -52,8 +58,10 @@ export default function PasswordScreen({ navigation }: Props) {
         );
       }
 
-      // 3. LOGIN HOÀN TẤT → HOME
-      navigation.replace('Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Successful' }],
+      });
     } catch (err) {
       console.log(err);
       Alert.alert('Lỗi', 'Đăng ký thất bại');

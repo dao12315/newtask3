@@ -12,7 +12,7 @@ export async function loginWithGoogle() {
     });
 
     // 2. Google Sign-In
-    // await GoogleSignin.signOut();
+    await GoogleSignin.signOut();
     const signInResult = await GoogleSignin.signIn();
     if (!signInResult) {
       return null;
@@ -23,7 +23,6 @@ export async function loginWithGoogle() {
     if (!idToken) {
       return null;
     }
-    console.log('ID_TOKEN: ', idToken);
 
     // 4. Firebase credential
     const googleCredential = GoogleAuthProvider.credential(idToken);
@@ -32,10 +31,6 @@ export async function loginWithGoogle() {
     const userCredential = await auth().signInWithCredential(googleCredential);
 
     const { user } = userCredential;
-    console.log(user);
-
-    console.log('[Google Login] UID:', user.uid);
-    console.log('[Google Login] Email:', user.email);
 
     return user;
   } catch (error: any) {

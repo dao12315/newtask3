@@ -9,7 +9,7 @@ export const DISEASE_LIST: CourseItem[] = [
     description: 'Xử trí khi bị tụt huyết áp như thế nào cho đúng cách',
     progress: 0,
     status: 'Chưa học',
-    image: require('../../../../assets/img/BenhNen/tut-huyet-ap.jpg'),
+    image: 'https://res.cloudinary.com/diggctoos/image/upload/v1769757540/ngat-xiu_ncyoaw.jpg',
   },
   {
     id: '2',
@@ -19,7 +19,7 @@ export const DISEASE_LIST: CourseItem[] = [
     description: 'Những cách sơ cứu người bị ngất xỉu và các lưu ý cần nhớ',
     progress: 0,
     status: 'Chưa học',
-    image: require('../../../../assets/img/BenhNen/ngat-xiu.jpg'),
+    image: 'https://res.cloudinary.com/diggctoos/image/upload/v1769757540/ngat-xiu_ncyoaw.jpg',
   },
   {
     id: '3',
@@ -29,7 +29,7 @@ export const DISEASE_LIST: CourseItem[] = [
     description: 'Cách sơ cứu người bị co giật an toàn, đúng trình tự',
     progress: 0,
     status: 'Chưa học',
-    image: require('../../../../assets/img/BenhNen/co-giat.jpg'),
+    image: 'https://res.cloudinary.com/diggctoos/image/upload/v1769757540/ngat-xiu_ncyoaw.jpg',
   },
   {
     id: '4',
@@ -39,6 +39,6 @@ export const DISEASE_LIST: CourseItem[] = [
     description: 'Sơ cứu đột quỵ tại nhà đúng cách, khoa học',
     progress: 0,
     status: 'Chưa học',
-    image: require('../../../../assets/img/BenhNen/dot-quy.jpg'),
+    image: 'https://res.cloudinary.com/diggctoos/image/upload/v1769757540/ngat-xiu_ncyoaw.jpg',
   },
 ];

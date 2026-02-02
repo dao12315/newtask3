@@ -13,6 +13,7 @@ import BenhNenScreen from '../screens/Courses/BenhNen/BenhNen.screen.tsx';
 import PhanBietScreen from '../screens/Courses/PhanBiet/PhanBiet.screen.tsx';
 import BenhNhiScreen from '../screens/Courses/BenhNhi/BenhNhi.screen.tsx';
 import OnBoardingScreen from '../screens/OnBoarding/OnBoarding.screen.tsx';
+import SuccessfulScreen from '../screens/Successful.screen.tsx';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
+  Successful: undefined;
   Password: {
     id?: string;
     name?: any;
@@ -62,6 +64,7 @@ export default function Navigator() {
         <Stack.Screen name={'PhanBiet'} component={PhanBietScreen} />
         <Stack.Screen name={'BenhNhi'} component={BenhNhiScreen} />
         <Stack.Screen name={'OnBoarding'} component={OnBoardingScreen} />
+        <Stack.Screen name={'Successful'} component={SuccessfulScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

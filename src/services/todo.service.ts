@@ -141,7 +141,6 @@ export class UserService {
       id: userId,
       ...user,
     };
-    console.log('✅ LOGIN SUCCESS USER:', result);
     return result;
   }
 

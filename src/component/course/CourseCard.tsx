@@ -18,7 +18,8 @@ export const CourseCard = ({ item, onPress }: Props) => {
         pressed && styles.pressed,
       ]}
     >
-      <Image source={item.image} style={styles.image} />
+<Image source={{ uri: item.image }} style={styles.image} />
+
 
       <View style={styles.content}>
         <TextComponent style={styles.title}>
