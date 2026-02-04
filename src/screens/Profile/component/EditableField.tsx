@@ -24,7 +24,7 @@ export const EditableField = ({
       }}
     >
       <TextInput
-        value={value}
+        value={value || '-'}
         editable={editable}
         onChangeText={onChangeText}
         keyboardType={keyboardType}

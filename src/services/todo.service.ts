@@ -1,124 +1,147 @@
-import database from '@react-native-firebase/database';
+import {
+  getDatabase,
+  ref,
+  set,
+  update,
+  query,
+  orderByChild,
+  equalTo,
+  get,
+} from '@react-native-firebase/database';
+import { getApp } from '@react-native-firebase/app';
+
 import { comparePassword, hasPassword } from '../utils/encoding.password';
 
 export type User = {
-  id: string;
-  name: string | null | undefined;
+  uid: string;
+  name: string | null;
   password: string;
-  email: string | null | undefined;
+  email: string | null;
   phoneNumber: number;
-  dateOfBirth: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  dateOfBirth: number;
+  createdAt: number;
+  updatedAt: number;
   status: boolean;
-  avatar: string | null | undefined;
+  avatar: string | null;
 };
 
 export class UserService {
-  private static ref = database().ref(`/users`);
+  private static db = getDatabase(getApp());
 
-  //CREATE
+  // ================= CREATE =================
   static async create(
+    uid: string,
     name: string,
     password: string,
     email: string,
     phoneNumber: number,
     dateOfBirth: number,
     avatar: string,
-  ): Promise<any> {
+  ): Promise<string> {
     const hashedPassword = await hasPassword(password);
-    const newRef = this.ref.push();
-    await newRef.set({
+    const now = Date.now();
+
+    await set(ref(this.db, `users/${uid}`), {
+      uid,
       name,
       password: hashedPassword,
-      email,
+      email: email.trim().toLowerCase(),
       phoneNumber,
       dateOfBirth,
-      createAt: Date.now(),
-      updateAt: Date.now(),
+      createdAt: now,
+      updatedAt: now,
       status: true,
       avatar,
     });
-    return newRef.key!;
+
+    return uid;
   }
 
-  //Check trùng Email
+  // ================= CHECK EMAIL =================
   static async isEmailExists(email: string): Promise<boolean> {
-    const normalizedEmail = email.trim().toLowerCase(); // chuẩn hóa khoảng trắng và chữ hoa
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const snapshot = await this.ref //gọi db users
-      .orderByChild('email') // duyệt qua tất cả bản ghi trong users
-      .equalTo(normalizedEmail) // lọc users có email = normalizedEmail
-      .once('value'); // đọc 1 lần
+    const q = query(
+      ref(this.db, 'users'),
+      orderByChild('email'),
+      equalTo(normalizedEmail),
+    );
+
+    const snapshot = await get(q);
     return snapshot.exists();
   }
 
-  //lấy dữ liệu của Email
+  // ================= GET BY EMAIL =================
   static async getByEmail(email: string): Promise<User | null> {
     const normalizedEmail = email.trim().toLowerCase();
 
-    const snapshot = await this.ref
-      .orderByChild('email')
-      .equalTo(normalizedEmail)
-      .once('value');
+    const q = query(
+      ref(this.db, 'users'),
+      orderByChild('email'),
+      equalTo(normalizedEmail),
+    );
 
-    if (!snapshot.exists()) {
-      return null;
-    }
+    const snapshot = await get(q);
+    if (!snapshot.exists()) return null;
 
     const data = snapshot.val();
     const userId = Object.keys(data)[0];
-    const dbUser = data[userId];
+    const u = data[userId];
 
     return {
-      id: userId,
-      name: dbUser.name ?? null,
-      email: dbUser.email ?? null,
-      avatar: dbUser.avatar ?? null,
-      password: dbUser.password ?? null,
-      phoneNumber: dbUser.phoneNumber ?? null,
-      dateOfBirth: dbUser.dateOfBirth ?? null,
-      createdAt: new Date(dbUser.createAt),
-      updatedAt: new Date(dbUser.updateAt),
-      status: dbUser.status ?? true,
+      uid: userId,
+      name: u.name ?? null,
+      email: u.email ?? null,
+      avatar: u.avatar ?? null,
+      password: u.password,
+      phoneNumber: u.phoneNumber,
+      dateOfBirth: u.dateOfBirth,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt,
+      status: u.status ?? true,
     };
   }
 
-  // UPDATE
+  // ================= UPDATE =================
   static async update(
     userId: string,
     data: Partial<{
       name: string | null;
       email: string | null;
       phoneNumber: number | null;
-      dateOfBirth: string | number | null;
+      dateOfBirth: number | null;
       avatar: string | null;
       status: boolean;
     }>,
-    userStore : any
+    userStore: any,
   ): Promise<void> {
-    if (!userId) {
-      throw new Error('USER_ID_REQUIRED');
-    }
+    if (!userId) throw new Error('USER_ID_REQUIRED');
 
-    await this.ref.child(userId).update({
+    await update(ref(this.db, `users/${userId}`), {
       ...data,
-      updateAt: Date.now(),
+      updatedAt: Date.now(),
     });
-    const {name , phoneNumber , dateOfBirth}= data
-    userStore.setProfile({name, dateOfBirth: typeof dateOfBirth === 'string' ? parseInt(dateOfBirth) : dateOfBirth, phoneNumber})
+
+    const { name, phoneNumber, dateOfBirth } = data;
+
+    userStore.setProfile({
+      name,
+      phoneNumber,
+      dateOfBirth,
+    });
   }
 
-  //LOGIN
+  // ================= LOGIN =================
   static async login(email: string, password: string): Promise<User> {
-    const normalizedEmail = email.trim().toLowerCase(); // chuẩn hóa khoảng trắng và chữ hoa
+    const normalizedEmail = email.trim().toLowerCase();
 
-    const snapshot = await this.ref //gọi db users
-      .orderByChild('email') // duyệt qua tất cả bản ghi trong users
-      .equalTo(normalizedEmail) // lọc users có email = normalizedEmail
-      .once('value'); // đọc 1 lần
-    console.log('📦 SNAPSHOT EXISTS:', snapshot.exists());
+    const q = query(
+      ref(this.db, 'users'),
+      orderByChild('email'),
+      equalTo(normalizedEmail),
+    );
 
+    const snapshot = await get(q);
     if (!snapshot.exists()) {
       throw new Error('EMAIL_NOT_FOUND');
     }
@@ -126,35 +149,33 @@ export class UserService {
     const data = snapshot.val();
     const userId = Object.keys(data)[0];
     const user = data[userId];
-    console.log('👤 USER FROM DB:', userId, user);
 
     const isMatch = await comparePassword(password, user.password);
-    if (!isMatch) {
-      throw new Error('INVALID_PASSWORD');
-    }
+    if (!isMatch) throw new Error('INVALID_PASSWORD');
+    if (user.status === false) throw new Error('USER_DISABLED');
 
-    if (user.status === false) {
-      throw new Error('USER_DISABLED');
-    }
-
-    const result = {
-      id: userId,
-      ...user,
+    return {
+      uid: userId,
+      name: user.name ?? null,
+      email: user.email ?? null,
+      avatar: user.avatar ?? null,
+      password: user.password,
+      phoneNumber: user.phoneNumber,
+      dateOfBirth: user.dateOfBirth,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      status: user.status,
     };
-    return result;
   }
-
 }
 
+// ================= UTILS =================
 export function isValidEmail(email: string): boolean {
   if (!email) return false;
 
   const value = email.trim();
-
   const regex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
 
   return regex.test(value);
 }
-
-// ndhj mzmx azyl yjmd

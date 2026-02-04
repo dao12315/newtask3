@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
+import { getAuth } from '@react-native-firebase/auth';
+import {
+  getDatabase,
+  ref,
+  query,
+  orderByChild,
+  equalTo,
+  get,
+  update,
+} from '@react-native-firebase/database';
+import { getApp } from '@react-native-firebase/app';
+
 import { useUserStore } from '../../stores/user.store';
 import { AuthStorage } from '../../stores/auth.storage';
 
@@ -28,14 +38,22 @@ export const useProfileLogic = () => {
     }
 
     try {
-      const email = auth().currentUser?.email;
+      const auth = getAuth();
+      const email = auth.currentUser?.email;
       if (!email) return;
 
-      const snapshot = await database()
-        .ref('/users')
-        .orderByChild('email')
-        .equalTo(email)
-        .once('value');
+      const app = getApp();
+      const db = getDatabase(app);
+
+      // 🔍 query user by email
+      const usersRef = ref(db, 'users');
+      const q = query(
+        usersRef,
+        orderByChild('email'),
+        equalTo(email),
+      );
+
+      const snapshot = await get(q);
 
       if (!snapshot.exists()) {
         Alert.alert('Lỗi', 'Không tìm thấy người dùng');
@@ -45,11 +63,12 @@ export const useProfileLogic = () => {
       const data = snapshot.val();
       const key = Object.keys(data)[0];
 
-      await database().ref(`/users/${key}`).update({
+      // ✅ update profile
+      await update(ref(db, `users/${key}`), {
         name,
         phoneNumber,
         dateOfBirth,
-        updateAt: Date.now(),
+        updatedAt: Date.now(),
       });
 
       const updatedUser = { ...user!, name, phoneNumber, dateOfBirth };

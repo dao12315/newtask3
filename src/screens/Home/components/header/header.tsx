@@ -29,7 +29,7 @@ const hasNotification = true;
 
 export const Header = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const { user } = useUserStore.getState();
+  const  user  = useUserStore(state => state.user);
   const { handleEditAvatar } = useHeaderLogic(); // ✅ GỌI Ở ĐÂY
   const logOut = async () => {
     try {

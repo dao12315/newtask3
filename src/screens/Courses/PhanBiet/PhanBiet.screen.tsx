@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, View, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComponent from '../../../component/TextComponent';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../routes/Navigator';
 import { CourseCard } from '../../../component/course/CourseCard';
-import { RECOGNITION_LIST } from './data/recognition.data';
 import { stylesCourse } from '../styles';
+import { CourseItem } from '../../../component/course/types';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { courseService } from '../../../services/course.service';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'PhanBiet'>;
+export default function PhanBietScreen() {
+  const navigation = useNavigation<NavigationProp<any>>();
 
-export default function PhanBietScreen({ navigation }: Props) {
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+  useEffect(() => {
+    courseService.getByCategory('PHAN_BIET').then(setCourses);
+  }, []);
   return (
     <SafeAreaView style={stylesCourse.safeArea}>
       <View style={stylesCourse.container}>
@@ -33,8 +37,16 @@ export default function PhanBietScreen({ navigation }: Props) {
         {/* CONTENT */}
         <ScrollView>
           <View style={stylesCourse.list}>
-            {RECOGNITION_LIST.map(item => (
-              <CourseCard key={item.id} item={item} />
+            {courses.map(item => (
+              <CourseCard
+                key={item.id}
+                item={item}
+                onPress={() =>
+                  navigation.navigate('CourseDetail', {
+                    courseId: item.id,
+                  })
+                }
+              />
             ))}
           </View>
         </ScrollView>

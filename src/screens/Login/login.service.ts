@@ -55,11 +55,12 @@ class LoginService {
     // CASE 2: USER MỚI
     // ===============================
     const newUserPayload = {
-      avatar: googleUser.photoURL ?? null,
+      uid: googleUser.uid,
+      avatar: googleUser.photoURL ?? '',
       name: googleUser.displayName ?? '',
       email: googleUser.email,
-      phoneNumber: null,
-      dateOfBirth: null,
+      phoneNumber: '',
+      dateOfBirth: '',
     };
 
     console.log('[Google Login] NEW USER PAYLOAD:', newUserPayload);

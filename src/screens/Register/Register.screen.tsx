@@ -27,12 +27,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
   const dobText = dob ? dob.toLocaleDateString('vi-VN') : '';
 
-  const dobISO = dob
-    ? `${dob.getFullYear()}/${String(dob.getMonth() + 1).padStart(
-        2,
-        '0',
-      )}/${String(dob.getDate()).padStart(2, '0')}`
-    : '';
+  const dobTimestamp = dob ? dob.getTime() : null;
 
   const handleNext = async () => {
     if (!name || !email || !phoneNumber || !dob) {
@@ -55,13 +50,14 @@ export default function RegisterScreen({ navigation }: Props) {
       Alert.alert('Số điện thoại không hợp lệ');
       return;
     }
+
     const avatar = '';
 
     navigation.navigate('Password', {
       name,
       email,
       phoneNumber: Number(phoneNumber),
-      dateOfBirth: dobISO,
+      dateOfBirth: dobTimestamp, // ✅ NUMBER (ms)
       avatar,
     });
   };
@@ -95,10 +91,10 @@ export default function RegisterScreen({ navigation }: Props) {
           Alert.alert('Lỗi', 'Không lấy được dữ liệu người dùng');
           return;
         }
-        navigation.replace('Home', { user: dbUser });
         return;
       }
       navigation.navigate('Password', {
+        uid: user.uid,
         avatar: user.photoURL,
         name: user.displayName,
         email: user.email,

@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComponent from '../../../component/TextComponent';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../routes/Navigator';
-import { PEDIATRIC_LIST } from './data/pediatric.data';
 import { CourseCard } from '../../../component/course/CourseCard';
 import { stylesCourse } from '../styles';
+import { CourseItem } from '../../../component/course/types';
+import { courseService } from '../../../services/course.service';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'BenhNhi'>;
+export default function BenhNhiScreen() {
+  const navigation = useNavigation<NavigationProp<any>>();
 
-export default function BenhNhiScreen({ navigation }: Props) {
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+  useEffect(() => {
+    courseService.getByCategory('BENH_NHI').then(setCourses);
+  }, []);
   return (
     <SafeAreaView style={stylesCourse.safeArea}>
       <View style={stylesCourse.container}>
@@ -33,8 +37,16 @@ export default function BenhNhiScreen({ navigation }: Props) {
         {/* CONTENT */}
         <ScrollView>
           <View style={stylesCourse.list}>
-            {PEDIATRIC_LIST.map(item => (
-              <CourseCard key={item.id} item={item} />
+            {courses.map(item => (
+              <CourseCard
+                key={item.id}
+                item={item}
+                onPress={() =>
+                  navigation.navigate('CourseDetail', {
+                    courseId: item.id,
+                  })
+                }
+              />
             ))}
           </View>
         </ScrollView>

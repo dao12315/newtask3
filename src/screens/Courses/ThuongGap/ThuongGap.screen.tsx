@@ -1,17 +1,20 @@
-import React from 'react';
-import { Pressable, View, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComponent from '../../../component/TextComponent';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../routes/Navigator';
-import { firstAidList } from './data/firstAid.data';
 import { CourseCard } from '../../../component/course/CourseCard';
 import { stylesCourse } from '../styles';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { CourseItem } from '../../../component/course/types';
+import { courseService } from '../../../services/course.service';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ThuongGap'>;
-
-export default function ThuongGapScreen({ navigation }: Props) {
+export default function ThuongGapScreen() {
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+  useEffect(() => {
+    courseService.getByCategory('THUONG_GAP').then(setCourses);
+  }, []);
   return (
     <SafeAreaView style={stylesCourse.safeArea}>
       <View style={stylesCourse.container}>
@@ -33,8 +36,16 @@ export default function ThuongGapScreen({ navigation }: Props) {
         {/* CONTENT */}
         <ScrollView>
           <View style={stylesCourse.list}>
-            {firstAidList.map(item => (
-              <CourseCard key={item.id} item={item} />
+            {courses.map(item => (
+              <CourseCard
+                key={item.id}
+                item={item}
+                onPress={() =>
+                  navigation.navigate('CourseDetail', {
+                    courseId: item.id,
+                  })
+                }
+              />
             ))}
           </View>
         </ScrollView>

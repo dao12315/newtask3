@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from './components/header/header';
@@ -18,10 +18,20 @@ import QAScreen from '../QA/QA.screen';
 import ProfileScreen from '../Profile/Profile.screen';
 
 import { useUserStore } from '../../stores/user.store';
+import { courseService } from '../../services/course.service';
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = React.useState<HomeTabKey>('home');
   const user = useUserStore(state => state.user);
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
+  const loadCourses = async () => {
+    const rawCourses = await courseService.getAll();
+    console.log(rawCourses);
+  };
 
   if (!user) return null;
 
@@ -60,4 +70,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-

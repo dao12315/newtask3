@@ -12,6 +12,11 @@ import {
 } from '@react-navigation/native';
 import { UserService } from '../../services/todo.service';
 import { sendEmail } from '../../services/mail.service';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from '@react-native-firebase/auth';
+import { getApp } from '@react-native-firebase/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Password'>;
 
@@ -23,50 +28,75 @@ export default function PasswordScreen() {
   const [hideConfirm, setHideConfirm] = useState(true);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { avatar, name, email, phoneNumber, dateOfBirth } = route.params;
+  const { uid, avatar, name, email, phoneNumber, dateOfBirth } = route.params;
 
-  const handleRegister = async () => {
-    if (!password || !confirmPassword) {
-      Alert.alert('Vui lòng nhập đầy đủ');
-      return;
-    }
+const handleRegister = async () => {
+  if (!password || !confirmPassword) {
+    Alert.alert('Vui lòng nhập đầy đủ');
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Mật khẩu không khớp');
-      return;
-    }
+  if (password !== confirmPassword) {
+    Alert.alert('Mật khẩu không khớp');
+    return;
+  }
 
-    try {
-      // 1. TẠO USER
-      const userId = await UserService.create(
-        name,
-        password,
+  try {
+    let finalUid = uid; // uid có thể có (Google) hoặc chưa (Email)
+
+    const auth = getAuth(getApp());
+
+    // ✅ CASE 1: EMAIL/PASSWORD → chưa có uid
+    if (!finalUid) {
+      const cred = await createUserWithEmailAndPassword(
+        auth,
         email,
-        phoneNumber,
-        dateOfBirth,
-        avatar,
+        password,
       );
-
-      console.log('Created userId:', userId);
-
-      // 2. GỬI EMAIL (OPTIONAL – KHÔNG BLOCK LOGIN)
-      const ok = await sendEmail(email);
-      if (!ok) {
-        Alert.alert(
-          'Cảnh báo',
-          'Tạo tài khoản thành công nhưng gửi email thất bại',
-        );
-      }
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Successful' }],
-      });
-    } catch (err) {
-      console.log(err);
-      Alert.alert('Lỗi', 'Đăng ký thất bại');
+      finalUid = cred.user.uid;
     }
-  };
+
+    // ⚠️ CASE 2: GOOGLE → uid đã có từ auth.currentUser
+    if (!finalUid && auth.currentUser?.uid) {
+      finalUid = auth.currentUser.uid;
+    }
+
+    if (!finalUid) {
+      throw new Error('UID_NOT_FOUND');
+    }
+
+    // ✅ TẠO USER PROFILE TRONG DB
+    const userId = await UserService.create(
+      finalUid,
+      name,
+      password, // ⚠️ nếu bạn đã sửa UserService thì nên bỏ password
+      email,
+      phoneNumber,
+      dateOfBirth,
+      avatar,
+    );
+
+    console.log('Created userId:', userId);
+
+    // ✅ GỬI EMAIL (OPTIONAL)
+    const ok = await sendEmail(email);
+    if (!ok) {
+      Alert.alert(
+        'Cảnh báo',
+        'Tạo tài khoản thành công nhưng gửi email thất bại',
+      );
+    }
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Successful' }],
+    });
+  } catch (err: any) {
+    console.log(err);
+    Alert.alert('Lỗi', err.message ?? 'Đăng ký thất bại');
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.safeArea}>

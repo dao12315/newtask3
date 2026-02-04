@@ -4,7 +4,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import TextComponent from '../../../component/TextComponent';
 
 export const formatDateVN = (timestamp?: number | null) => {
-  if (!timestamp) return '—';
+  if (!timestamp) return '-';
 
   const date = new Date(timestamp);
   const d = String(date.getDate()).padStart(2, '0');

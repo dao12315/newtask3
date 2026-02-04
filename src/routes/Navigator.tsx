@@ -14,6 +14,7 @@ import PhanBietScreen from '../screens/Courses/PhanBiet/PhanBiet.screen.tsx';
 import BenhNhiScreen from '../screens/Courses/BenhNhi/BenhNhi.screen.tsx';
 import OnBoardingScreen from '../screens/OnBoarding/OnBoarding.screen.tsx';
 import SuccessfulScreen from '../screens/Successful.screen.tsx';
+import CourseDetailScreen from '../screens/Lession/lession.screen.tsx';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -28,7 +29,7 @@ export type RootStackParamList = {
     password?: string;
     email?: any;
     phoneNumber?: number;
-    dateOfBirth?: String;
+    dateOfBirth?: number | string | null;
     createdAt?: Date;
     updatedAt?: Date;
     upDate?: boolean;
@@ -41,6 +42,7 @@ export type RootStackParamList = {
   BenhNhi: undefined;
 
   OnBoarding: undefined;
+  CourseDetail: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,6 +67,7 @@ export default function Navigator() {
         <Stack.Screen name={'BenhNhi'} component={BenhNhiScreen} />
         <Stack.Screen name={'OnBoarding'} component={OnBoardingScreen} />
         <Stack.Screen name={'Successful'} component={SuccessfulScreen} />
+        <Stack.Screen name={'CourseDetail'} component={CourseDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
