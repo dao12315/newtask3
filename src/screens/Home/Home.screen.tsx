@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from './components/header/header';
@@ -14,11 +14,12 @@ import {
   HomeTabKey,
 } from './components/bottomTabBar/bottomTabBar';
 
-import QAScreen from '../QA/QA.screen';
 import ProfileScreen from '../Profile/Profile.screen';
 
 import { useUserStore } from '../../stores/user.store';
 import { courseService } from '../../services/course.service';
+import StoreScreen from '../Store/store.screen';
+import { ChatScreen } from '../QA/QA.screen';
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = React.useState<HomeTabKey>('home');
@@ -37,19 +38,19 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* HEADER */}
-      <Header />
-
       {/* CONTENT */}
       {activeTab === 'home' ? (
         <ScrollView
           overScrollMode="never"
+          stickyHeaderIndices={[0]}
           contentContainerStyle={{
             paddingHorizontal: 15,
             paddingTop: 10,
             gap: 15,
           }}
         >
+          {/* HEADER */}
+          <Header />
           <Banner />
           <CourseGrid />
           <Suggestion />
@@ -60,11 +61,11 @@ export default function HomeScreen() {
         </ScrollView>
       ) : (
         <View style={{ flex: 1 }}>
-          {activeTab === 'qa' && <QAScreen />}
+          {activeTab === 'shop' && <StoreScreen />}
+          {activeTab === 'qa' && <ChatScreen />}
           {activeTab === 'profile' && <ProfileScreen />}
         </View>
       )}
-
       {/* BOTTOM TAB */}
       <BottomTabBar activeTab={activeTab} onChange={setActiveTab} />
     </SafeAreaView>

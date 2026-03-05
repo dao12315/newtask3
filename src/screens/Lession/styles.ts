@@ -28,4 +28,44 @@ export const styleLessionItem = StyleSheet.create({
     color: '#fff',
     fontSize: 28,
   },
+  lessonItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#fff',
+  },
+  item: {
+    flexDirection: 'row',
+    padding: 12,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+  title: {
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  btn: {
+    backgroundColor: '#b00020',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  btnText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  close: {
+    padding: 12,
+    backgroundColor: '#000',
+  },
+  video: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#000',
+  },
 });

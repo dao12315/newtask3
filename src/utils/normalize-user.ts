@@ -2,7 +2,7 @@ import { AppUser } from '../models/app-user';
 import { User } from '../services/todo.service';
 
 export const normalizeUser = (user: User): AppUser => ({
-  id: user.uid,
+  uid: user.uid,
   name: user.name ?? null,
   email: user.email ?? null,
   avatar: user.avatar ?? null,

@@ -8,7 +8,7 @@ export const stylesHeader = StyleSheet.create({
     backgroundColor: '#ffd0d6',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    borderRadius: 25,
   },
 
   left: {

@@ -14,7 +14,7 @@ type BottomTabBarProps = {
   activeTab: HomeTabKey;
   onChange: (tab: HomeTabKey) => void;
 };
-export type HomeTabKey = 'home' | 'qa' | 'profile';
+export type HomeTabKey = 'home' | 'shop' | 'qa' | 'profile';
 
 export const BottomTabBar = ({ activeTab, onChange }: BottomTabBarProps) => {
   return (

@@ -1,126 +1,128 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
-  Image,
-  Pressable,
   FlatList,
+  TextInput,
+  Pressable,
   StyleSheet,
-  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import Video from 'react-native-video';
+import { ChatMessage, chatService } from '../../services/chat.service';
 
-const DATA = [
-  {
-    id: '1',
-    title: 'CPR',
-    status: 'Có sẵn',
-    thumb:
-      'https://res.cloudinary.com/diggctoos/image/upload/v1769757539/dot-quy_dboq5q.jpg',
-    video:
-      'https://res.cloudinary.com/diggctoos/video/upload/v1769762643/Genshin_Impact_2025-10-26_04-56-58_tof4v7.m3u8',
-  },
-  {
-    id: '2',
-    title: 'CPR',
-    status: 'Có sẵn',
-    thumb:
-      'https://res.cloudinary.com/diggctoos/image/upload/v1769757539/dot-quy_dboq5q.jpg',
-    video:
-      'https://res.cloudinary.com/diggctoos/video/upload/v1769762643/Genshin_Impact_2025-10-26_04-56-58_tof4v7.m3u8',
-  },
-];
+export const ChatScreen = () => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [text, setText] = useState('');
+  useEffect(() => {
+    console.log('MESSAGES LENGTH:', messages.length);
+  }, [messages]);
 
-export default function QAScreen() {
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  // 🔹 Subscribe messages (service tự lấy uid)
+  useEffect(() => {
+    return chatService.subscribeMessages(setMessages);
+  }, []);
+
+  // 🔹 Sort an toàn (không mutate state)
+  const sortedMessages = useMemo(() => {
+    return [...messages].sort((a, b) => a.createdAt - b.createdAt);
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!text.trim()) return;
+
+    await chatService.sendMessage(text.trim(), 'user');
+    setText('');
+  };
+
+  const renderItem = ({ item }: { item: ChatMessage }) => {
+    const isUser = item.sender === 'user';
+
+    return (
+      <View
+        style={{
+          alignSelf: isUser ? 'flex-end' : 'flex-start',
+          backgroundColor: isUser ? '#990012' : '#ddd',
+          padding: 10,
+          borderRadius: 10,
+          marginBottom: 8,
+          maxWidth: '75%',
+        }}
+      >
+        <Text style={{ color: isUser ? '#fff' : '#000' }}>{item.text}</Text>
+      </View>
+    );
+  };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <FlatList
-        data={DATA}
+        style={{ flex: 1 }}
+        data={sortedMessages}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Image source={{ uri: item.thumb }} style={styles.thumb} />
-
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.status}>{item.status}</Text>
-            </View>
-
-            <Pressable
-              style={styles.btn}
-              onPress={() => setVideoUrl(item.video)}
-            >
-              <Text style={styles.btnText}>Xem</Text>
-            </Pressable>
-          </View>
-        )}
+        renderItem={renderItem}
+        contentContainerStyle={{
+          padding: 12,
+          justifyContent: 'flex-end',
+        }}
+        keyboardShouldPersistTaps="handled"
       />
 
-      {/* VIDEO MODAL */}
-      <Modal visible={!!videoUrl} animationType="slide">
-        <Pressable style={styles.close} onPress={() => setVideoUrl(null)}>
-          <Text style={{ color: '#fff', fontSize: 16 }}>Đóng</Text>
-        </Pressable>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={text}
+          onChangeText={setText}
+          placeholder="Nhập tin nhắn..."
+        />
 
-        {videoUrl && (
-          <Video
-            source={{ uri: videoUrl }}
-            style={styles.video}
-            controls
-            resizeMode="contain"
-            bufferConfig={{
-              minBufferMs: 15000,
-              maxBufferMs: 50000,
-              bufferForPlaybackMs: 2500,
-              bufferForPlaybackAfterRebufferMs: 5000,
-            }}
-          />
-        )}
-      </Modal>
-    </View>
+        <Pressable style={styles.sendButton} onPress={handleSend}>
+          <Text style={{ color: '#fff' }}>Gửi</Text>
+        </Pressable>
+      </View>
+    </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  item: {
-    flexDirection: 'row',
-    padding: 12,
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  messageContainer: {
+    padding: 10,
+    borderRadius: 10,
     marginBottom: 8,
+    maxWidth: '75%',
   },
-  thumb: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 12,
+  userMessage: {
+    backgroundColor: '#990012',
+    alignSelf: 'flex-end',
   },
-  title: {
-    fontWeight: '600',
-    fontSize: 16,
+  adminMessage: {
+    backgroundColor: '#ddd',
+    alignSelf: 'flex-start',
   },
-  status: {
-    color: '#888',
-    marginTop: 4,
-  },
-  btn: {
-    backgroundColor: '#b00020',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 6,
-  },
-  btnText: {
+  messageText: {
     color: '#fff',
-    fontWeight: '600',
   },
-  close: {
-    padding: 12,
-    backgroundColor: '#000',
+  inputContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderTopWidth: 1,
+    borderColor: '#eee',
   },
-  video: {
+  input: {
     flex: 1,
-    backgroundColor: '#000',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 8,
+  },
+  sendButton: {
+    backgroundColor: '#990012',
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    borderRadius: 8,
   },
 });

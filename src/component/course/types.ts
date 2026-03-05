@@ -16,7 +16,7 @@ export type CourseItem = {
   image: string;
 
   progress: number;
-  status: 'Chưa học' | 'Đang học' | 'Hoàn thành';
+  status: string;
 };
 
 export type Course = {

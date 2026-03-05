@@ -8,8 +8,7 @@ import { normalizeUser } from '../../utils/normalize-user';
 
 class LoginService {
   async loginWithEmail(email: string, password: string) {
-    const dbUser = await UserService.login(email, password);
-
+    const dbUser = await UserService.login(email, password)
 
     const appUser = normalizeUser({
       ...dbUser,

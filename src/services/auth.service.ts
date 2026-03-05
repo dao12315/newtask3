@@ -32,6 +32,10 @@ export async function loginWithGoogle() {
 
     const { user } = userCredential;
 
+    console.log('FIREBASE UID:', user.uid);
+    console.log('EMAIL:', user.email);
+    console.log('DISPLAY NAME:', user.displayName);
+
     return user;
   } catch (error: any) {
     if (error.code === statusCodes.SIGN_IN_CANCELLED) {

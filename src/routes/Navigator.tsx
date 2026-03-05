@@ -15,6 +15,11 @@ import BenhNhiScreen from '../screens/Courses/BenhNhi/BenhNhi.screen.tsx';
 import OnBoardingScreen from '../screens/OnBoarding/OnBoarding.screen.tsx';
 import SuccessfulScreen from '../screens/Successful.screen.tsx';
 import CourseDetailScreen from '../screens/Lession/lession.screen.tsx';
+import ProductDetailScreen from '../screens/Store/ProductDetailScreen.tsx';
+import CartScreen from '../screens/Store/CartScreen.tsx';
+import PaymentScreen from '../screens/payment/PaymentScreen.tsx';
+import AddAddressScreen from '../screens/payment/AddAddressScreen.tsx';
+import OrderHistoryScreen from '../screens/Order/OrderHistoryScreen.tsx';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -40,9 +45,17 @@ export type RootStackParamList = {
   BenhNen: undefined;
   PhanBiet: undefined;
   BenhNhi: undefined;
+  ProductDetail: undefined;
+  CartScreen: undefined;
+  PaymentScreen: undefined;
+  AddAddressScreen: undefined;
+  OrderHistoryScreen: undefined;
+  ChatScreen: undefined;
 
   OnBoarding: undefined;
-  CourseDetail: undefined;
+  CourseDetail: {
+    courseId: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -68,6 +81,13 @@ export default function Navigator() {
         <Stack.Screen name={'OnBoarding'} component={OnBoardingScreen} />
         <Stack.Screen name={'Successful'} component={SuccessfulScreen} />
         <Stack.Screen name={'CourseDetail'} component={CourseDetailScreen} />
+        <Stack.Screen name={'ProductDetail'} component={ProductDetailScreen} />
+        <Stack.Screen name={'CartScreen'} component={CartScreen} />
+        <Stack.Screen name={'PaymentScreen'} component={PaymentScreen} />
+        <Stack.Screen name={'AddAddressScreen'} component={AddAddressScreen} />
+        <Stack.Screen name={'OrderHistoryScreen'} component={OrderHistoryScreen} />
+        {/* <Stack.Screen name={'ChatScreen'} component={ChatScreen} /> */}
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
