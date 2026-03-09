@@ -27,19 +27,18 @@ export const CourseGrid = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Khóa học</Text>
+      <View>
+        <Text style={styles.title}>Khóa học</Text>
 
-      <View style={styles.divider} />
+        <View style={styles.divider} />
+      </View>
 
       <View style={styles.grid}>
         {courseIcons.map(item => (
           <Pressable
             key={item.label}
             onPress={() => navigation.navigate(item.screen)}
-            style={({ pressed }) => [
-              styles.card,
-              pressed && styles.pressed,
-            ]}
+            style={({ pressed }) => [styles.card, pressed && styles.pressed]}
           >
             <Icon name={item.name} size={100} color="#ffffff" />
             <Text style={styles.label}>{item.label}</Text>
@@ -50,12 +49,12 @@ export const CourseGrid = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    height: 350,
-    paddingHorizontal: 23,
+    height: 400,
+    padding: 10,
     overflow: 'hidden',
+    gap: 10,
   },
 
   title: {
@@ -73,12 +72,14 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 15,
+    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   card: {
-    width: 150,
-    height: 150,
+    width: '46%',
+    height: '46%',
     borderRadius: 15,
     backgroundColor: '#c32f30',
     justifyContent: 'center',

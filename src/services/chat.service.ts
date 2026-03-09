@@ -33,7 +33,6 @@ class ChatService {
     return user.uid;
   }
 
-  // 🔥 KHÔNG async
   subscribeMessages(callback: (messages: ChatMessage[]) => void): () => void {
     let isMounted = true;
     let messagesQuery: ReturnType<typeof query> | null = null;
